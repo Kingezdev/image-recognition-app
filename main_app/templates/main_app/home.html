@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Recognition</title>
+    <!-- Add Bootstrap or custom CSS for styling -->
+</head>
+<body>
+    <div class="container">
+        <h1>Image Recognition</h1>
+
+        <!-- Form to upload image -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}  <!-- Display form fields automatically -->
+            
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary">Upload Image</button>
+        </form>
+
+        <!-- Show the dominant colors result (if any) -->
+        {% if result %}
+            <h2>Dominant Colors</h2>
+            
+            {% if result.rgb_colors %}
+                <h3>RGB Colors:</h3>
+                <ul>
+                    {% for color in result.rgb_colors %}
+                        <li>RGB: {{ color }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if result.hex_colors %}
+                <h3>Hex Colors:</h3>
+                <ul>
+                    {% for hex_color in result.hex_colors %}
+                        <li>Hex: {{ hex_color }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if result.color_names %}
+                <h3>Color Names:</h3>
+                <ul>
+                    {% for color_name in result.color_names %}
+                        <li>{{ color_name }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
+
+        <!-- Go back to homepage button -->
+        <a href="{% url 'home' %}" class="btn btn-primary">Go Back to Homepage</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Recognition</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+</head>
+<body>
+    <h1>Image Recognition</h1>
+
+    <div id="preview-container">
+        <p>Preview </p>
+        <img id="preview" src="" alt="Image preview will appear here">
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload Image</button>
+    </form>
+
+    {% if result %}
+        <h2>Results</h2>
+        {% if result.colors %}
+            <h3>Dominant Colors</h3>
+            <ul>
+                {% for color in result.colors %}
+                    <li>
+                        <span
+                            class="color-preview"
+                            style="background-color: {{ color.hex }};"
+                        ></span>
+                        {{ color.name }} ({{ color.hex }}) - RGB: {{ color.rgb }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>{{ result.error }}</p>
+        {% endif %}
+    {% else %}
+        <p>No results yet. Upload an image to analyze.</p>
+    {% endif %}
+
+    <script>
+        // JavaScript to handle image preview
+        const imageInput = document.querySelector('input[type="file"]');
+        const previewImage = document.getElementById('preview');
+    
+        imageInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    previewImage.src = event.target.result;
+                    previewImage.style.display = "block";
+    
+                    // Force dimensions dynamically
+                    previewImage.style.width = "300px"; // Set the desired width
+                    previewImage.style.height = "200px"; // Set the desired height
+                    previewImage.style.objectFit = "cover"; // Ensures image is cropped or contained
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewImage.src = "";
+                previewImage.style.display = "none";
+            }
+        });
+    </script>
+    
+</body>
+</html>
